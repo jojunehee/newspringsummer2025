@@ -35,6 +35,9 @@ list
         $.ajax({
             url: "/api/board/list",
             method: "GET",
+            headers : {
+                "testing" : "hahaha"
+            },
             data:{
                 deleted : deleted
                 , title : $("#search_title").val()

@@ -4,6 +4,8 @@ import com.thc.sprbasic2025.domain.Board;
 import com.thc.sprbasic2025.dto.BoardDto;
 import com.thc.sprbasic2025.dto.DefaultDto;
 import com.thc.sprbasic2025.service.BoardService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +45,14 @@ public class BoardRestController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<BoardDto.DetailResDto>> list(BoardDto.ListReqDto params){
+    public ResponseEntity<List<BoardDto.DetailResDto>> list(BoardDto.ListReqDto params, HttpServletRequest request, HttpServletResponse response){
+        String testing = request.getHeader("testing");
+        System.out.println("testing : " + testing);
+
+        System.out.println("reqTesting1 : " + request.getAttribute("reqTesting1"));
+        System.out.println("resTesting2 : " + response.getHeader("resTesting2"));
+
+
         return ResponseEntity.ok(boardService.list(params));
     }
 

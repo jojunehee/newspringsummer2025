@@ -82,6 +82,7 @@ create
         if(userId == null){
             alert("로그인 이전입니다. 로그인먼저 해주세요.");
             location.replace("/user/login");
+            return false;
         }
 
         let _data = {
