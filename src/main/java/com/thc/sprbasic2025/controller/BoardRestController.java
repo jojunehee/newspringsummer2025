@@ -24,12 +24,16 @@ public class BoardRestController {
     }
 
     @PostMapping("")
-    public ResponseEntity<DefaultDto.CreateResDto> create(@RequestBody BoardDto.CreateReqDto params){
+    public ResponseEntity<DefaultDto.CreateResDto> create(@RequestBody BoardDto.CreateReqDto params, HttpServletRequest request){
+        Long reqUserId = (Long) request.getAttribute("reqUserId");
+        params.setReqUserId(reqUserId);
         return ResponseEntity.ok(boardService.create(params));
     }
 
     @PutMapping("")
-    public ResponseEntity<Void> update(@RequestBody BoardDto.UpdateReqDto params){
+    public ResponseEntity<Void> update(@RequestBody BoardDto.UpdateReqDto params, HttpServletRequest request){
+        Long reqUserId = (Long) request.getAttribute("reqUserId");
+        params.setReqUserId(reqUserId);
         boardService.update(params);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -45,13 +49,9 @@ public class BoardRestController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<BoardDto.DetailResDto>> list(BoardDto.ListReqDto params, HttpServletRequest request, HttpServletResponse response){
-        String testing = request.getHeader("testing");
-        System.out.println("testing : " + testing);
-
-        System.out.println("reqTesting1 : " + request.getAttribute("reqTesting1"));
-        System.out.println("resTesting2 : " + response.getHeader("resTesting2"));
-
+    public ResponseEntity<List<BoardDto.DetailResDto>> list(BoardDto.ListReqDto params, HttpServletRequest request){
+        Long reqUserId = (Long) request.getAttribute("reqUserId");
+        System.out.println("reqUserId : " + reqUserId);
 
         return ResponseEntity.ok(boardService.list(params));
     }

@@ -124,6 +124,9 @@ detail
         $.ajax({
             url: "/api/board",
             method: "PUT",
+            headers : {
+                "Authorization" : localStorage.getItem("AccessToken")
+            },
             contentType : 'application/json; charset=utf-8',
             data: JSON.stringify(_data),
             success: (data, status, xhr)=>{

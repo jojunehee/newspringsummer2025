@@ -78,8 +78,8 @@ create
 <script>
     function createBoard(){
 
-        let userId = localStorage.getItem("userId");
-        if(userId == null){
+        let refreshToken = localStorage.getItem("RefreshToken");
+        if(refreshToken == null){
             alert("로그인 이전입니다. 로그인먼저 해주세요.");
             location.replace("/user/login");
             return false;
@@ -89,7 +89,6 @@ create
             title : $("#input_title").val(),
             content : $("#input_content").val()
         };
-        _data["userId"] = userId;
 
         let board_imgs = $(".board_imgs");
         let imgs = [];
@@ -102,6 +101,9 @@ create
             url: "/api/board",
             method: "POST",
             contentType : 'application/json; charset=utf-8',
+            headers : {
+                "Authorization" : localStorage.getItem("AccessToken")
+            },
             data: JSON.stringify(_data),
             success: (data, status, xhr)=>{
                 alert(JSON.stringify(data));

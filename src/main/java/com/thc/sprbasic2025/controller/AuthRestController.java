@@ -14,12 +14,20 @@ public class AuthRestController {
 
     final TokenFactory tokenFactory;
 
+    String prefix = "Bearer ";
+
     @PostMapping("")
     public ResponseEntity<Void> getAccessToken(HttpServletRequest request){
+        String accessKey =null;
+
         //리프레시 토큰이 유요한지 확인!
         String refreshToken = request.getHeader("RefreshToken");
-        String accessKey = tokenFactory.generateAccessKey(refreshToken);
-
+        System.out.println("1 refreshToken : " + refreshToken);
+        if(refreshToken != null && refreshToken.startsWith(prefix)){
+            refreshToken = refreshToken.substring(prefix.length());
+            System.out.println("2 refreshToken : " + refreshToken);
+            accessKey = tokenFactory.generateAccessKey(refreshToken);
+        }
         return ResponseEntity.status(HttpStatus.OK).header("Authorization",accessKey).build();
     }
 

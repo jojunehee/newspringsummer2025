@@ -15,6 +15,8 @@ public class BoardDto {
         String content;
         List<String> imgs;
 
+        Long reqUserId;
+
         public Board toEntity(){
             return Board.of(getUserId(), getTitle(), getContent());
         }
@@ -30,6 +32,8 @@ public class BoardDto {
         String title;
         String content;
         Integer countread;
+
+        Long reqUserId;
     }
     /*@Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor
     public static class DeleteReqDto {

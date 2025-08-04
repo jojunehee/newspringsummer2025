@@ -12,19 +12,24 @@ import java.util.List;
 @Component
 public class TokenFactory {
 
+    String prefix = "Bearer ";
+
     int refreshTokenDuedateTerm = 60;
     int accessTokenDuedateTerm = 10;
 
     final RefreshTokenRepository refreshTokenRepository;
 
+    public Long validateAccessToken(String accessToken){
+        return validateKey(accessToken);
+    }
     public String generateAccessKey(String refreshKey){
-        Long userId = validateRefreshTokenKey(refreshKey);
+        Long userId = validateRefreshToken(refreshKey);
         if(userId != null){
-            return generateKey(userId, accessTokenDuedateTerm);
+            return prefix + generateKey(userId, accessTokenDuedateTerm);
         }
         return null;
     }
-    public Long validateRefreshTokenKey(String refreshKey){
+    public Long validateRefreshToken(String refreshKey){
         Long userId = null;
         RefreshToken refreshToken = refreshTokenRepository.findByContent(refreshKey);
         if(refreshToken != null){
@@ -37,7 +42,7 @@ public class TokenFactory {
         revokeRefreshKey(userId);
         String refreshKey = generateKey(userId, refreshTokenDuedateTerm);
         refreshTokenRepository.save(RefreshToken.of(userId, refreshKey));
-        return refreshKey;
+        return prefix + refreshKey;
     }
     public void revokeRefreshKey(Long userId){
         List<RefreshToken> list = refreshTokenRepository.findByUserId(userId);

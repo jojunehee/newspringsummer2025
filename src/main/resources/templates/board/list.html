@@ -36,7 +36,7 @@ list
             url: "/api/board/list",
             method: "GET",
             headers : {
-                "testing" : "hahaha"
+                "Authorization" : localStorage.getItem("AccessToken")
             },
             data:{
                 deleted : deleted

@@ -1,7 +1,9 @@
 package com.thc.sprbasic2025.interceptor;
 
+import com.thc.sprbasic2025.util.TokenFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -9,24 +11,30 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Enumeration;
 
+@RequiredArgsConstructor
 public class DefaultInterceptor implements HandlerInterceptor {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    final TokenFactory tokenFactory;
+
+    String prefix = "Bearer ";
 
     //컨트롤러 진입 전에 호출되는 메서드
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         logger.info("preHandle / request [{}]", request);
 
-        String testing = request.getHeader("testing");
-        logger.info("preHandle / testing [{}]", testing);
+        String accessToken = request.getHeader("Authorization");
+        logger.info("preHandle / 1 accessToken [{}]", accessToken);
 
-        request.setAttribute("reqTesting1", "hahah2");
-        response.setHeader("resTesting2", "hahah3");
-        logger.info("preHandle / reqTesting1 [{}]", request.getAttribute("reqTesting1"));
-        logger.info("preHandle / resTesting2 [{}]", response.getHeader("resTesting2"));
-
-
+        Long userId = null;
+        if(accessToken != null && accessToken.startsWith(prefix)){
+            accessToken = accessToken.substring(prefix.length());
+            logger.info("preHandle / 2 accessToken [{}]", accessToken);
+            userId = tokenFactory.validateAccessToken(accessToken);
+        }
+        request.setAttribute("reqUserId", userId);
         return true;
     }
 

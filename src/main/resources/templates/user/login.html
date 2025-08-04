@@ -26,13 +26,13 @@ login
             },
             data: JSON.stringify(_data),
             success: (data, status, xhr)=>{
-                let accessKey = xhr.getResponseHeader("Authorization");
-                alert(accessKey);
-                if(accessKey == null || "" === accessKey){
+                let accessToken = xhr.getResponseHeader("Authorization");
+                alert(accessToken);
+                if(accessToken == null || "" === accessToken){
                     alert("실패");
                 } else {
                     alert("성공");
-                    localStorage.setItem("Authorization", accessKey);
+                    localStorage.setItem("AccessToken", accessToken);
                 }
             },
             error: (data, status, xhr)=>{

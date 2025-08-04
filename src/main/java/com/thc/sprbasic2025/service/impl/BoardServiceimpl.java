@@ -39,6 +39,13 @@ public class BoardServiceimpl implements BoardService {
 
     @Override
     public DefaultDto.CreateResDto create(BoardDto.CreateReqDto param) {
+        //유저 로그인 안되어 있으면 못쓰게 할꺼야!
+        if(param.getReqUserId() == null){
+            throw new RuntimeException("no userId");
+        } else {
+            param.setUserId(param.getReqUserId());
+        }
+
         DefaultDto.CreateResDto res = boardRepository.save(param.toEntity()).toCreateResDto();
         for(String each : param.getImgs()){
             boardimgService.create(BoardimgDto.CreateReqDto.builder().boardId(res.getId()).url(each).build());
@@ -52,6 +59,12 @@ public class BoardServiceimpl implements BoardService {
         if(board == null){
             throw new RuntimeException("no data");
         }
+        System.out.println("board.getUserId() : " + board.getUserId());
+        System.out.println("param.getReqUserId() : " + param.getReqUserId());
+        if(!board.getUserId().equals(param.getReqUserId())){
+            throw new RuntimeException("userId is not equal to reqUserId");
+        }
+
         if(param.getDeleted() != null){ board.setDeleted(param.getDeleted()); }
         if(param.getUserId() != null){ board.setUserId(param.getUserId()); }
         if(param.getTitle() != null){ board.setTitle(param.getTitle()); }
@@ -84,8 +97,6 @@ public class BoardServiceimpl implements BoardService {
 
         Boardlike boardlike = boardlikeRepository.findByDeletedAndBoardIdAndUserId(false ,res.getId(), param.getUserId());
         res.setLiked(boardlike != null);
-
-
 
         return res;
     }
