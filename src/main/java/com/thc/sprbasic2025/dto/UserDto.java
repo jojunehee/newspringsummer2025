@@ -11,6 +11,10 @@ public class UserDto {
         String username;
         String password;
     }
+    @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
+    public static class LoginResDto{
+        String refreshToken;
+    }
 
     /**/
 

@@ -11,9 +11,35 @@ login
     username : <input type="text" id="input_user_username" class="input_create"/> <br/>
     password : <input type="password" id="input_user_password" class="input_create"/> <br/>
     <button onclick="loginUser()">로그인</button>
+    <button onclick="getAccessToken()">getAccessToken</button>
 </div>
 
 <script>
+    function getAccessToken(){
+        let _data = {};
+        $.ajax({
+            url: "/api/auth",
+            method: "POST",
+            contentType : 'application/json; charset=utf-8',
+            headers : {
+                "RefreshToken" : localStorage.getItem("RefreshToken")
+            },
+            data: JSON.stringify(_data),
+            success: (data, status, xhr)=>{
+                let accessKey = xhr.getResponseHeader("Authorization");
+                alert(accessKey);
+                if(accessKey == null || "" === accessKey){
+                    alert("실패");
+                } else {
+                    alert("성공");
+                    localStorage.setItem("Authorization", accessKey);
+                }
+            },
+            error: (data, status, xhr)=>{
+                alert(JSON.stringify(data));
+            },
+        });
+    }
     function loginUser(){
         let _data = {};
         let input_create = $(".input_create");
@@ -28,14 +54,22 @@ login
             contentType : 'application/json; charset=utf-8',
             data: JSON.stringify(_data),
             success: (data, status, xhr)=>{
-
-                if(data["id"] > 0){
+                let refreshToken = xhr.getResponseHeader("RefreshToken");
+                alert(refreshToken);
+                if(refreshToken == null || "" === refreshToken){
+                    alert("로그인 실패");
+                } else {
+                    alert("로그인 성공");
+                    localStorage.setItem("RefreshToken", refreshToken);
+                    //location.replace("/index");
+                }
+                /*if(data["id"] > 0){
                     alert("로그인 성공");
                     localStorage.setItem("userId", data["id"]);
                     location.replace("/index");
                 } else {
                     alert("로그인 실패");
-                }
+                }*/
             },
             error: (data, status, xhr)=>{
                 alert(JSON.stringify(data));
