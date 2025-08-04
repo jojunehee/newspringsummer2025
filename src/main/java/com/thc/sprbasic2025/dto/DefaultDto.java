@@ -4,6 +4,7 @@ import com.thc.sprbasic2025.domain.Board;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class DefaultDto {
@@ -33,15 +34,22 @@ public class DefaultDto {
     public static class DetailResDto {
         Long id;
         Boolean deleted;
+
+        LocalDateTime createdAt;
+        LocalDateTime modifiedAt;
     }
 
     @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
     public static class ListReqDto {
         Boolean deleted;
+        String sdate;
+        String fdate;
     }
     @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
     public static class PagedListReqDto {
         Boolean deleted;
+        String sdate;
+        String fdate;
 
         Integer offset;
         Integer callpage;
@@ -65,13 +73,14 @@ public class DefaultDto {
             }
 
             Integer callpage = getCallpage();
-            if(callpage == null || callpage < 1){
-                //페이지 수가 없거나, 1보다 작은 페이수를 호출할 때
+            if(callpage == null){
                 callpage = 1;
             }
             if(callpage > totalpage){
-                //전체 페이지보다 더 다음 페이지를 호출할때!
                 callpage = totalpage;
+            }
+            if(callpage < 1){
+                callpage = 1;
             }
             setCallpage(callpage);
 
@@ -113,6 +122,8 @@ public class DefaultDto {
     @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
     public static class ScrollListReqDto {
         Boolean deleted;
+        String sdate;
+        String fdate;
 
         String mark;
         Integer perpage;

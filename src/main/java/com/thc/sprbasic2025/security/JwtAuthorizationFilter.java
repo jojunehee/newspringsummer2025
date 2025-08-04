@@ -1,6 +1,7 @@
 package com.thc.sprbasic2025.security;
 
 import com.thc.sprbasic2025.domain.User;
+import com.thc.sprbasic2025.exception.InvalidTokenException;
 import com.thc.sprbasic2025.exception.NoMatchingDataException;
 import com.thc.sprbasic2025.repository.UserRepository;
 import jakarta.servlet.FilterChain;
@@ -56,13 +57,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 		System.out.println("userId : " + userId);
 
 		// 유저 조회, 없을 시 return NoMatchingDataException(404)
-		User userEntity = userRepository.findEntityGraphRoleTypeById(userId).orElseThrow(new Supplier<NoMatchingDataException>() {
-			@Override
-			public NoMatchingDataException get() {
-				return new NoMatchingDataException("id : " + userId);
-			}
-		});
-		PrincipalDetails principalDetails = new PrincipalDetails(userEntity);
+		User user = userRepository.findById(userId).orElseThrow(() -> new NoMatchingDataException());
+		PrincipalDetails principalDetails = new PrincipalDetails(user);
 		// Authentication 생성
 		Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, null, principalDetails.getAuthorities());
 		// SecurityContextHolder에 Authentication을 담아서 Spring Security가 권한 처리 할 수 있게 한다.

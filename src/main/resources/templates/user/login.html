@@ -22,17 +22,18 @@ login
             method: "POST",
             contentType : 'application/json; charset=utf-8',
             headers : {
-                "RefreshToken" : localStorage.getItem("RefreshToken")
+                "RefreshToken" : localStorage.getItem("refreshToken")
             },
             data: JSON.stringify(_data),
             success: (data, status, xhr)=>{
                 let accessToken = xhr.getResponseHeader("Authorization");
-                alert(accessToken);
+                //alert(accessToken);
                 if(accessToken == null || "" === accessToken){
                     alert("실패");
                 } else {
                     alert("성공");
-                    localStorage.setItem("AccessToken", accessToken);
+                    localStorage.setItem("accessToken", accessToken);
+                    location.replace("/permission/admin_list");
                 }
             },
             error: (data, status, xhr)=>{
@@ -59,8 +60,9 @@ login
                 if(refreshToken == null || "" === refreshToken){
                     alert("로그인 실패");
                 } else {
-                    alert("로그인 성공");
-                    localStorage.setItem("RefreshToken", refreshToken);
+                    //alert("로그인 성공");
+                    localStorage.setItem("refreshToken", refreshToken);
+                    getAccessToken();
                     //location.replace("/index");
                 }
                 /*if(data["id"] > 0){

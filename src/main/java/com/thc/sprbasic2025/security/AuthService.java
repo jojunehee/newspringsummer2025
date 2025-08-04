@@ -3,7 +3,6 @@ package com.thc.sprbasic2025.security;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 
-// 토큰 팩토리
 public interface AuthService {
 	
 	Algorithm getTokenAlgorithm();

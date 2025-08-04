@@ -27,4 +27,9 @@ public class AuditingFields {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @LastModifiedDate
     LocalDateTime modifiedAt;
+
+    @PrePersist
+    public void onPrePersist() {
+        this.deleted = false;
+    }
 }
