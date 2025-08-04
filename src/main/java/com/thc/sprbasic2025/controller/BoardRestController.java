@@ -3,11 +3,14 @@ package com.thc.sprbasic2025.controller;
 import com.thc.sprbasic2025.domain.Board;
 import com.thc.sprbasic2025.dto.BoardDto;
 import com.thc.sprbasic2025.dto.DefaultDto;
+import com.thc.sprbasic2025.security.PrincipalDetails;
 import com.thc.sprbasic2025.service.BoardService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -48,9 +51,18 @@ public class BoardRestController {
         return ResponseEntity.ok(boardService.detail(params));
     }
 
+
+    @PreAuthorize("permitAll()")
+    //@PreAuthorize("hasRole('USER')")
     @GetMapping("/list")
-    public ResponseEntity<List<BoardDto.DetailResDto>> list(BoardDto.ListReqDto params, HttpServletRequest request){
-        Long reqUserId = (Long) request.getAttribute("reqUserId");
+    public ResponseEntity<List<BoardDto.DetailResDto>> list(BoardDto.ListReqDto params
+            , HttpServletRequest request, @AuthenticationPrincipal PrincipalDetails principalDetails
+    ){
+        //Long reqUserId = (Long) request.getAttribute("reqUserId");
+        Long reqUserId = null;
+        if(principalDetails != null){
+            reqUserId = principalDetails.getUser().getId();
+        }
         System.out.println("reqUserId : " + reqUserId);
 
         return ResponseEntity.ok(boardService.list(params));

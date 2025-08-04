@@ -36,10 +36,16 @@ dependencies {
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3' //3.0.2 => 3.0.3으로 상승!!
 
     // aws 파일 업로드를 위함
-    // https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk
     implementation group: 'com.amazonaws', name: 'aws-java-sdk', version: '1.12.460'
-    // https://mvnrepository.com/artifact/commons-io/commons-io
     implementation group: 'commons-io', name: 'commons-io', version: '2.13.0'
+
+    // 시큐리티 사용을 위함
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
+    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
+    //implementation 'com.auth0:java-jwt:4.4.0'
+    implementation group: 'com.auth0', name: 'java-jwt', version: '4.4.0'
 
     /*
 
@@ -51,14 +57,6 @@ dependencies {
     // 이메일 전송을 위함
     // https://mvnrepository.com/artifact/com.sun.mail/javax.mail
     implementation group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2'
-
-    // 시큐리티 사용을 위함
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
-    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
-    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
-    //implementation 'com.auth0:java-jwt:4.4.0'
-    implementation group: 'com.auth0', name: 'java-jwt', version: '4.4.0'
 
     // SNS 로그인을 위함
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'

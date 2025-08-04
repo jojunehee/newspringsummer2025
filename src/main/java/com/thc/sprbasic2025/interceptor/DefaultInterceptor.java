@@ -25,7 +25,7 @@ public class DefaultInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         logger.info("preHandle / request [{}]", request);
 
-        String accessToken = request.getHeader("Authorization");
+        /*String accessToken = request.getHeader("Authorization");
         logger.info("preHandle / 1 accessToken [{}]", accessToken);
 
         Long userId = null;
@@ -34,7 +34,7 @@ public class DefaultInterceptor implements HandlerInterceptor {
             logger.info("preHandle / 2 accessToken [{}]", accessToken);
             userId = tokenFactory.validateAccessToken(accessToken);
         }
-        request.setAttribute("reqUserId", userId);
+        request.setAttribute("reqUserId", userId);*/
         return true;
     }
 
