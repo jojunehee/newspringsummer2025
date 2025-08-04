@@ -51,7 +51,7 @@ public class PermissionRestController {
     }
 
     @PreAuthorize("hasRole('USER')")
-    @GetMapping("/detail")
+    @GetMapping("")
     public ResponseEntity<PermissionDto.DetailResDto> detail(DefaultDto.DetailReqDto params, @AuthenticationPrincipal PrincipalDetails principalDetails){
         Long reqUserId = getReqUserId(principalDetails);
         return ResponseEntity.ok(permissionService.detail(params, reqUserId));

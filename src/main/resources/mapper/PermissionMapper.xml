@@ -2,6 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.thc.sprbasic2025.mapper.PermissionMapper">
 
+	<select id="permitted" parameterType="hashMap" resultType="Integer">
+		SELECT count(permission.id) as listsize
+		FROM permission, permissiondetail, permissionuser
+		WHERE permissiondetail.permission_id = permission.id
+		  AND permissionuser.permission_id = permission.id
+		  AND permissiondetail.target = #{target}
+		  AND permissiondetail.func = #{func}
+		  AND permissionuser.user_id = #{userId}
+		  AND permission.deleted = false
+		  AND permissiondetail.deleted = false
+		  AND permissionuser.deleted = false
+
+	</select>
+
 	<!---->
 	<select id="detail" parameterType="hashMap" resultType="com.thc.sprbasic2025.dto.PermissionDto$DetailResDto">
 		SELECT permission.id

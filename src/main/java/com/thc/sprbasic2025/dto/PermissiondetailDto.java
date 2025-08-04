@@ -1,61 +1,60 @@
 package com.thc.sprbasic2025.dto;
 
-import com.thc.sprbasic2025.domain.Permission;
+import com.thc.sprbasic2025.domain.Permissiondetail;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.util.List;
-
-public class PermissionDto {
-
-    public static String[][] targets = {
-            {"permission", "권한"}      
-            , {"user", "사용자"}      
-            , {"notice", "공지사항"}
-            , {"faq", "FAQ"}
-    };
-    
+public class PermissiondetailDto {
     @Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor
-    public static class PermittedReqDto {
-        Long userId;
+    public static class ToggleReqDto {
+        Boolean alive; //true면 생성, false면 삭제!
+        Long permissionId;
         String target;
         Integer func;
     }
+
+    /**/
+
     @Getter @Setter @Builder @NoArgsConstructor @AllArgsConstructor
     public static class CreateReqDto {
-        String title;
-        String content;
+        Long permissionId;
+        String target;
+        Integer func;
 
-        public Permission toEntity(){
-            return Permission.of(getTitle(), getContent());
+        public Permissiondetail toEntity(){
+            return Permissiondetail.of(getPermissionId(), getTarget(), getFunc());
         }
     }
 
     @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
     public static class UpdateReqDto extends DefaultDto.UpdateReqDto{
-        String title;
-        String content;
+        String target;
+        Integer func;
     }
 
     @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
     public static class DetailResDto extends DefaultDto.DetailResDto{
-        String title;
-        String content;
-
-        String[][] targets;
-        List<PermissiondetailDto.DetailResDto> details;
+        Long permissionId;
+        String target;
+        Integer func;
     }
 
     @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
     public static class ListReqDto extends DefaultDto.ListReqDto{
-        String title;
+        Long permissionId;
+        String target;
+        Integer func;
     }
     @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
     public static class PagedListReqDto extends DefaultDto.PagedListReqDto{
-        String title;
+        Long permissionId;
+        String target;
+        Integer func;
     }
     @Getter @Setter @SuperBuilder @NoArgsConstructor @AllArgsConstructor
     public static class ScrollListReqDto extends DefaultDto.ScrollListReqDto{
-        String title;
+        Long permissionId;
+        String target;
+        Integer func;
     }
 }

@@ -45,7 +45,6 @@
     var list_info_permissionuser_template = Handlebars.compile(list_info_permissionuser);
 </script>
 
-
 <!-- Page Wrapper -->
 <div id="wrapper">
 
@@ -176,30 +175,47 @@
         detail_permission();
     });
 
-    function create_permissionuser(){
+    function create_permissionuser() {
         let _param = {
-            permissionId: getIdFromUrl(null)
-            , username: $("#create_permissionuser_username").val()
+            'permissionId': getIdFromUrl(null)
+            , 'username': $("#create_permissionuser_username").val()
         };
         let _data = {};
         _data.url = "/api/permissionuser";
         _data.type = "POST";
         _data.param = _param;
-        _data.success = function(obj_data, obj_status, obj_xhr){
+        _data.success = function (obj_data, obj_status, obj_xhr) {
             search_permissionuser();
         }
-        _data.error = function(obj_data, obj_status, obj_xhr){
+        _data.error = function (obj_data, obj_status, obj_xhr) {
+            alert("정상적으로 이루어지지 않았습니다. 다시 시도해주세요.");
+        }
+        func_ajax(_data);
+    }
+    function delete_permissionuser(obj_id) {
+        let _param = {
+            'id': obj_id
+        };
+        let _data = {};
+        _data.url = "/api/permissionuser";
+        _data.type = "DELETE";
+        _data.param = _param;
+        _data.success = function (obj_data, obj_status, obj_xhr) {
+            search_permissionuser();
+        }
+        _data.error = function (obj_data, obj_status, obj_xhr) {
             alert("정상적으로 이루어지지 않았습니다. 다시 시도해주세요.");
         }
         func_ajax(_data);
     }
     function search_permissionuser() {
-
+        let permissionId = getIdFromUrl(null);
         let _data = new Map();
         _data.url = "/api/permissionuser/list";
         _data.type = "GET";
         _data.param = {
             deleted : false
+            , permissionId : permissionId
         };
         _data.success = function(obj_data, obj_status, obj_xhr){
             $("#tbody_permissionuser_list").html("");
@@ -209,50 +225,61 @@
                 tList.push(each);
                 $("#tbody_permissionuser_list").append(list_info_permissionuser_template({"resultData_permissionuser":tList}));
             }
-            listenerFontOrder(obj_data, "permissionuser");
+            listenerFontOrder("permissionuser")
         }
         _data.error = function(obj_data, obj_status, obj_xhr){
             alert("정상적으로 이루어지지 않았습니다. 다시 시도해주세요.");
         }
         func_ajax(_data);
     }
-
-    function listener_chk_permission(obj_target, obj_func){
-        if(obj_func === "0"){
-            let alive = $("#input_chk_each_"+obj_target+"_0").prop("checked");
-            let input_chk_each_target = $(".input_chk_each_" + obj_target);
-            for(let each of input_chk_each_target){
-                let tempAlive = $(each).prop("checked");
-                if(tempAlive !== alive){
-                    $(each).prop("checked", alive);
-                    let tempName = $(each).attr("name");
-                    toggle_permission(obj_target, tempName);
-                }
-            }
-        } else {
-            toggle_permission(obj_target, obj_func);
-        }
-    }
-    function toggle_permission(obj_target, obj_func){
-        let alive = $("#input_chk_each_"+obj_target+"_" + obj_func).prop("checked");
+    function toggle_permissiondetail(obj_alive, obj_target, obj_func) {
         let _param = {
-            alive : alive
-            , permissionId: getIdFromUrl(null)
-            , target : obj_target
-            , func : obj_func
+            'permissionId': getIdFromUrl(null)
+            , 'alive': obj_alive
+            , 'target': obj_target
+            , 'func': obj_func
         };
         let _data = {};
         _data.url = "/api/permissiondetail/toggle";
         _data.type = "POST";
         _data.param = _param;
         _data.success = function (obj_data, obj_status, obj_xhr) {
-            listener_target_all(obj_target);
+            //alert("등록 성공");
+            listener_chk_permission_all(obj_target);
         }
         _data.error = function (obj_data, obj_status, obj_xhr) {
             alert("정상적으로 이루어지지 않았습니다. 다시 시도해주세요.");
         }
         func_ajax(_data);
     }
+
+    function listener_chk_permission(obj_target, obj_func) {
+        let checked = $("#input_chk_each_" + obj_target + "_" + obj_func).prop("checked");
+        if (obj_func === '0') {
+            //전체 제어
+            let tempArray = [110, 120, 200];
+            for(let each of tempArray){
+                $("#input_chk_each_" + obj_target + "_" + each).prop("checked", checked);
+                toggle_permissiondetail(checked, obj_target, each);
+            }
+        } else {
+            //개별 제어
+            toggle_permissiondetail(checked, obj_target, obj_func);
+        }
+    }
+
+    function listener_chk_permission_all(obj_target) {
+        let isOn = true;
+        let input_chk_each = $(".input_chk_each_" + obj_target);
+        for (let each of input_chk_each) {
+            let each_checked = $(each).prop("checked");
+            if (!each_checked) {
+                isOn = false;
+            }
+        }
+        $("#input_chk_each_" + obj_target + "_0").prop("checked", isOn);
+    }
+
     function update_permission(obj_this){
         let _param = {
             id : getIdFromUrl(null)
@@ -269,16 +296,6 @@
         }
         func_ajax(_data);
     }
-    function listener_target_all(obj_target) {
-        let isAlive = true;
-        let input_chk_each_target = $(".input_chk_each_" + obj_target);
-        for(each of input_chk_each_target){
-            if(!$(each).prop("checked")){
-                isAlive = false;
-            }
-        }
-        $("#input_chk_each_" + obj_target + "_0").prop("checked", isAlive);
-    }
     function detail_permission() {
         let permissionId = getIdFromUrl(null);
         let _data = new Map();
@@ -290,20 +307,19 @@
             listenerAfterDetail(obj_data, "permission");
 
             let targets = obj_data["targets"];
-            for(let each of targets){
-                let tempData = {};
-                tempData["target"] = each[0];
-                tempData["title"] = each[1];
+            for (let each of targets) {
                 let tList = [];
-                tList.push(tempData);
-                $("#tbody_permissiondetail_list").append(list_info_permissiondetail_template({"resultData_permissiondetail":tList}));
+                let eachData = {};
+                eachData["target"] = each[0];
+                eachData["title"] = each[1];
+                tList.push(eachData);
+                $("#tbody_permissiondetail_list").append(list_info_permissiondetail_template({"resultData_permissiondetail": tList}));
             }
+
             let details = obj_data["details"];
-            for(let each of details) {
-                let target = each["target"];
-                let func = each["func"];
-                $("#input_chk_each_" + target + "_" + func).prop("checked", true);
-                listener_target_all(target);
+            for (let each of details) {
+                $("#input_chk_each_" + each["target"] + "_" + each["func"]).prop("checked", true);
+                listener_chk_permission_all(each["target"]);
             }
         }
         _data.error = function (obj_data, obj_status, obj_xhr) {

@@ -3,10 +3,13 @@ package com.thc.sprbasic2025.service.impl;
 import com.thc.sprbasic2025.domain.Permission;
 import com.thc.sprbasic2025.dto.PermissionDto;
 import com.thc.sprbasic2025.dto.DefaultDto;
+import com.thc.sprbasic2025.dto.PermissiondetailDto;
 import com.thc.sprbasic2025.exception.NoMatchingDataException;
 import com.thc.sprbasic2025.mapper.PermissionMapper;
 import com.thc.sprbasic2025.repository.PermissionRepository;
 import com.thc.sprbasic2025.service.PermissionService;
+import com.thc.sprbasic2025.service.PermissiondetailService;
+import com.thc.sprbasic2025.service.PermittedService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,15 +22,21 @@ public class PermissionServiceimpl implements PermissionService {
 
     final PermissionRepository permissionRepository;
     final PermissionMapper permissionMapper;
+    final PermissiondetailService permissiondetailService;
+    final PermittedService permittedService;
+
+    final String target = "permission";
 
     @Override
     public DefaultDto.CreateResDto create(PermissionDto.CreateReqDto param, Long reqUserId) {
+        permittedService.isAble(target, 110, reqUserId);
         DefaultDto.CreateResDto res = permissionRepository.save(param.toEntity()).toCreateResDto();
         return res;
     }
 
     @Override
     public void update(PermissionDto.UpdateReqDto param, Long reqUserId) {
+        permittedService.isAble(target, 120, reqUserId);
         Permission permission = permissionRepository.findById(param.getId()).orElse(null);
         if(permission == null){
             throw new NoMatchingDataException("no data");
@@ -42,7 +51,12 @@ public class PermissionServiceimpl implements PermissionService {
     }
 
     public PermissionDto.DetailResDto get(DefaultDto.DetailReqDto param, Long reqUserId) {
+        permittedService.isAble(target, 200, reqUserId);
         PermissionDto.DetailResDto res = permissionMapper.detail(param.getId());
+
+        res.setTargets(PermissionDto.targets);
+        res.setDetails(permissiondetailService.list(PermissiondetailDto.ListReqDto.builder().deleted(false).permissionId(res.getId()).build(), reqUserId));
+
         return res;
     }
     @Override
